@@ -1,5 +1,5 @@
 import React from 'react';
-mport ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom';
 
 const myfirstelement = <h1>Hello React!</h1>
 
