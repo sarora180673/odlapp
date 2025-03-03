@@ -8,6 +8,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          repository: DevDappcom/devdapp
+          token: ${{ secrets.PAT }}
+          ref: main
           sparse-checkout: |
             .github/workflows/auto-label.json5
           sparse-checkout-cone-mode: false
