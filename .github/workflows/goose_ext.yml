@@ -46,6 +46,8 @@ jobs:
                   Apply label "bug"  to issue $ISSUE_NUMBER in Repository REPOSITORY
                   EOF
 
+            - name: Test
+              run: cat instructions.txt
 
             - name: Run Goose with github extension
               run: |
