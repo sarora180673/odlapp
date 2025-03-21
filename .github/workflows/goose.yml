@@ -1,6 +1,4 @@
-
 name: Goose
-
 on:
    pull_request:
       types: [opened, synchronize, reopened, labeled]
@@ -17,15 +15,14 @@ env:
 jobs:
    goose-comment:
       runs-on: ubuntu-latest
-
       steps:
             - name: Check out repository
-            uses: actions/checkout@v4
-            with:
+              uses: actions/checkout@v4
+              with:
                   fetch-depth: 0
 
             - name: Gather PR information
-            run: |
+              run: |
                   {
                   echo "# Files Changed"
                   gh pr view $PR_NUMBER --json files \
@@ -36,14 +33,14 @@ jobs:
                   } > changes.txt
 
             - name: Install Goose CLI
-            run: |
+              run: |
                   mkdir -p /home/runner/.local/bin
                   curl -fsSL https://github.com/block/goose/releases/download/stable/download_cli.sh \
                   | CONFIGURE=false INSTALL_PATH=/home/runner/.local/bin bash
                   echo "/home/runner/.local/bin" >> $GITHUB_PATH
 
             - name: Configure Goose
-            run: |
+              run: |
                   mkdir -p ~/.config/goose
                   cat <<EOF > ~/.config/goose/config.yaml
                   GOOSE_PROVIDER: groq
@@ -52,7 +49,7 @@ jobs:
                   EOF
 
             - name: Create instructions for Goose
-            run: |
+              run: |
                   cat <<EOF > instructions.txt
                   Create a summary of the changes provided. Don't provide any session or logging details.
                   The summary for each file should be brief and structured as:
@@ -64,10 +61,10 @@ jobs:
                   EOF
 
             - name: Test
-            run: cat instructions.txt
+              run: cat instructions.txt
 
             - name: Run Goose and filter output
-            run: |
+              run: |
                   goose run --instructions instructions.txt | \
                   # Remove ANSI color codes
                   sed -E 's/\x1B\[[0-9;]*[mK]//g' | \
@@ -80,6 +77,6 @@ jobs:
                   > pr_comment.txt
 
             - name: Post comment to PR
-            run: |
+              run: |
                   cat -A pr_comment.txt
                   gh pr comment $PR_NUMBER --body-file pr_comment.txt
