@@ -43,7 +43,7 @@ jobs:
             - name: Create instructions for Goose
               run: |
                   cat <<EOF > instructions.txt
-                  Apply label "bug"  to issue $ISSUE_NUMBER in Repository REPOSITORY
+                  Apply label "bug"  to issue $ISSUE_NUMBER in Repository $REPOSITORY
                   EOF
 
             - name: Test
