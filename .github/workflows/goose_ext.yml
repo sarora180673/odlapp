@@ -10,6 +10,7 @@ permissions:
 
 env:
    GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+   ISSUE_NUMBER: ${{ github.event.issue.issue_number }}
    PR_NUMBER: ${{ github.event.pull_request.number }}
    GH_TOKEN: ${{ github.token }}
 
@@ -38,6 +39,13 @@ jobs:
                   keyring: false
                   EOF
 
+            - name: Create instructions for Goose
+              run: |
+                  cat <<EOF > instructions.txt
+                  Apply label "bug"  to issue $ISSUE_NUMBER
+                  EOF
+
+
             - name: Run Goose with github extension
               run: |
-                  goose session --with-extension "GITHUB_PERSONAL_ACCESS_TOKEN=${{ secrets.PAT }} npx -y @modelcontextprotocol/server-github"
+                  goose run --with-extension "GITHUB_PERSONAL_ACCESS_TOKEN=${{ secrets.PAT }} npx -y @modelcontextprotocol/server-github" --instructions instructions.txt
