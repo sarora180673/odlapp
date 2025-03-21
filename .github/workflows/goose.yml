@@ -46,7 +46,7 @@ jobs:
                   cat <<EOF > ~/.config/goose/config.yaml
                   GOOSE_PROVIDER: groq
                   GOOSE_MODEL: llama-3.3-70b-versatile
-                  keyring: false
+                  keyring: No
                   EOF
 
             - name: Create instructions for Goose
