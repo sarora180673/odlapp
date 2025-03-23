@@ -43,7 +43,7 @@ jobs:
             - name: Create instructions for Goose
               run: |
                   cat <<EOF > instructions.txt
-                  Apply label "bug"  to issue $ISSUE_NUMBER in Repository $REPOSITORY
+                  If the description of issue $ISSUE_NUMBER in Repository $REPOSITORY contains word "error" then Apply label "bug".Otherwise apply label "enhancement".
                   EOF
 
             - name: Test
