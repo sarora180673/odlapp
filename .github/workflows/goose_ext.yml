@@ -44,8 +44,8 @@ jobs:
               run: |
                   cat <<EOF > instructions.txt
                   For issue $ISSUE_NUMBER in Repository $REPOSITORY :
-                  If issue description contains word "http://" then Apply label "enhancement"
-                  If issue description contains word "error"  then apply label "bug".
+                  If issue body contains word "http://" then Apply label "enhancement".
+                  Else if issue body contains word "error"  then apply label "bug".
                   EOF
 
             - name: Test
