@@ -1,7 +1,7 @@
 name: Goose_extension
 on:
    issues:
-      types: ['opened','edited']
+      types: ['opened']
 
 permissions:
    contents: write
