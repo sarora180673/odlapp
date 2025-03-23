@@ -43,9 +43,7 @@ jobs:
             - name: Create instructions for Goose
               run: |
                   cat <<EOF > instructions.txt
-                  For issue $ISSUE_NUMBER in Repository $REPOSITORY :
-                  If title of issue contains word "test" then Apply label "enhancement".
-                  Else if title of issue contains word "error"  then apply label "bug".
+                  Apply label "bug" if body of issue $ISSUE_NUMBER in repository $REPOSITORY contains word "error" else Apply label "enhancement" if body of issue $ISSUE_NUMBER in repository $REPOSITORY contains word "test"
                   EOF
 
             - name: Test
