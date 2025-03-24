@@ -36,6 +36,7 @@ jobs:
 
             - name: Run Goose with github extension
               run: |
+                  cd /home/suresh
                   . ./.bashrc
                   cd /home/suresh/goose
                   goose run --with-extension "GITHUB_PERSONAL_ACCESS_TOKEN=${{ secrets.PAT }} npx -y @modelcontextprotocol/server-github" --instructions instructions.txt
