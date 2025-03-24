@@ -1,0 +1,54 @@
+name: Goose_extension
+on:
+   issues:
+      types: ['opened']
+
+permissions:
+   contents: write
+   pull-requests: write
+   issues: write
+
+env:
+   GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+   ISSUE_NUMBER: ${{ github.event.issue.number }}
+   PR_NUMBER: ${{ github.event.pull_request.number }}
+   GH_TOKEN: ${{ github.token }}
+   REPOSITORY: ${{ github.repository }}
+
+jobs:
+   goose-comment:
+      runs-on: ubuntu-latest
+      steps:
+            - name: Check out repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Install Goose CLI
+              run: |
+                  mkdir -p /home/runner/.local/bin
+                  curl -fsSL https://github.com/block/goose/releases/download/stable/download_cli.sh \
+                  | CONFIGURE=false INSTALL_PATH=/home/runner/.local/bin bash
+                  echo "/home/runner/.local/bin" >> $GITHUB_PATH
+
+            - name: Configure Goose
+              run: |
+                  mkdir -p ~/.config/goose
+                  cat <<EOF > ~/.config/goose/config.yaml
+                  GOOSE_PROVIDER: groq
+                  GOOSE_MODEL: llama-3.3-70b-versatile
+                  keyring: false
+                  EOF
+
+            - name: Create instructions for Goose
+              run: |
+                  cat <<EOF > instructions.txt
+                  Apply label "bug" if body of issue $ISSUE_NUMBER in repository $REPOSITORY contains word "error" else Apply label "enhancement" if body of issue $ISSUE_NUMBER in repository $REPOSITORY contains word "test"
+                  EOF
+
+            - name: Test
+              run: cat instructions.txt
+
+            - name: Run Goose with github extension
+              run: |
+                  goose run --with-extension "GITHUB_PERSONAL_ACCESS_TOKEN=${{ secrets.PAT }} npx -y @modelcontextprotocol/server-github" --instructions instructions.txt
