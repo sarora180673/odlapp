@@ -17,28 +17,13 @@ env:
 
 jobs:
    goose-comment:
-      runs-on: ubuntu-latest
+      runs-on: self-hosted
       steps:
             - name: Check out repository
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
 
-            - name: Install Goose CLI
-              run: |
-                  mkdir -p /home/runner/.local/bin
-                  curl -fsSL https://github.com/block/goose/releases/download/stable/download_cli.sh \
-                  | CONFIGURE=false INSTALL_PATH=/home/runner/.local/bin bash
-                  echo "/home/runner/.local/bin" >> $GITHUB_PATH
-
-            - name: Configure Goose
-              run: |
-                  mkdir -p ~/.config/goose
-                  cat <<EOF > ~/.config/goose/config.yaml
-                  GOOSE_PROVIDER: groq
-                  GOOSE_MODEL: llama-3.3-70b-versatile
-                  keyring: false
-                  EOF
 
             - name: Create instructions for Goose
               run: |
