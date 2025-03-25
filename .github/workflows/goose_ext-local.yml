@@ -27,9 +27,7 @@ jobs:
             - name: Create instructions for Goose
               run: |
                   cat <<EOF > instructions.txt
-                  Analyze the issue $ISSUE_NUMBER in repository $REPOSITORY and apply appropriate labels based on the following rules:
-                   1. Apply label "bug" if the issue description or title contains words like "error", "crash", "broken", "not working", "fails"
-                   2. Apply label "enhancement" if the issue description or title contains words like "improve", "better", "optimize", "enhance"
+                  Apply label "bug" if body of issue $ISSUE_NUMBER in repository $REPOSITORY contains word "error". Apply label "enhancement" if body of issue $ISSUE_NUMBER in repository $REPOSITORY contains word "improve"
                   EOF
 
             - name: Test
