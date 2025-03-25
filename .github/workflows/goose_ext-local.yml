@@ -27,7 +27,17 @@ jobs:
             - name: Create instructions for Goose
               run: |
                   cat <<EOF > instructions.txt
-                  Apply label "bug" if body of issue $ISSUE_NUMBER in repository $REPOSITORY contains word "error" else Apply label "enhancement" if body of issue $ISSUE_NUMBER in repository $REPOSITORY contains word "test"
+                  Analyze the issue $ISSUE_NUMBER in repository $REPOSITORY and apply appropriate labels based on the following rules:
+                   1. Apply label "bug" if the issue description or title contains words like "error", "crash", "broken", "not working", "fails"
+                   2. Apply label "enhancement" if the issue description or title contains words like "improve", "better", "optimize", "enhance"
+                   3. Apply label "feature-request" if the issue description or title contains words like "add", "new", "implement", "would like"
+                   4. Apply label "documentation" if the issue description or title contains words like "docs", "readme", "documentation", "guide"
+                   5. Apply label "question" if the issue description or title contains words like "how", "what", "why", "help", "?"
+                   6. Apply label "duplicate" if the issue description or title contains words like "same as", "duplicate of", "already reported"
+                   7. Apply label "help-wanted" if the issue description or title contains words like "help needed", "looking for help", "contributions welcome"
+                   8. Apply label "good-first-issue" if the issue description or title contains words like "beginner", "starter", "easy", "simple"
+                   9. Apply label "priority-high" if the issue description or title contains words like "urgent", "critical", "blocking", "important"
+                   10. Apply label "priority-low" if the issue description or title contains words like "nice to have", "minor", "low priority"
                   EOF
 
             - name: Test
