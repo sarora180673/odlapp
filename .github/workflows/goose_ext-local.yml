@@ -1,39 +1,106 @@
 name: Goose_extension
 on:
-   issues:
-      types: ['opened','edited']
+  issues:
+    types: [opened, edited]
 
 permissions:
-   contents: write
-   pull-requests: write
-   issues: write
+  contents: write
+  pull-requests: write
+  issues: write
 
 env:
-   ISSUE_NUMBER: ${{ github.event.issue.number }}
-   PR_NUMBER: ${{ github.event.pull_request.number }}
-   GH_TOKEN: ${{ github.token }}
-   REPOSITORY: ${{ github.repository }}
+  ISSUE_NUMBER: ${{ github.event.issue.number }}
+  PR_NUMBER: ${{ github.event.pull_request.number }}
+  GH_TOKEN: ${{ github.token }}
+  REPOSITORY: ${{ github.repository }}
 
 jobs:
-   goose-comment:
-      runs-on: self-hosted
-      steps:
-            - name: Check out repository
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
+  goose-comment:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      - name: Create instructions for Goose
+        run: |
+          cat > instructions.txt << "EOF"
+          Analyze the body and title of issue $ISSUE_NUMBER in repository $REPOSITORY and apply labels based on the following rules:
 
-            - name: Create instructions for Goose
-              run: |
-                  cat <<EOF > instructions.txt
-                  Apply label "bug" if body of issue $ISSUE_NUMBER in repository $REPOSITORY contains word "error". Apply label "enhancement" if body of issue $ISSUE_NUMBER in repository $REPOSITORY contains word "improve"
-                  EOF
+          1. Apply label "bug" if the issue:
+             - Contains words like "error", "bug", "crash", "fix", "broken", "not working", "fails", "issue", "problem"
+             - Describes unexpected behavior or system failures
+             - Reports problems with existing functionality
+             - Mentions error messages or stack traces
 
-            - name: Test
-              run: cat instructions.txt
+          2. Apply label "enhancement" if the issue:
+             - Contains words like "feature", "improvement", "enhance", "add", "new", "request", "would be nice", "suggestion"
+             - Suggests new functionality or improvements
+             - Requests additional features or capabilities
+             - Proposes changes to enhance user experience
 
-            - name: Run Goose with github extension
-              run: |
-                  . ~/.bashrc
-                  goose run --with-extension "GITHUB_PERSONAL_ACCESS_TOKEN=${{ secrets.PAT }} npx -y @modelcontextprotocol/server-github" --instructions instructions.txt
+          3. Apply label "documentation" if the issue:
+             - Contains words like "docs", "documentation", "readme", "guide", "tutorial", "example", "clarify"
+             - Relates to improving or fixing documentation
+             - Requests clarification in documentation
+             - Suggests updates to guides or tutorials
+
+          4. Apply label "question" if the issue:
+             - Contains words like "how to", "help", "question", "clarify", "explain", "what is", "how do I"
+             - Asks for guidance or support
+             - Seeks clarification about functionality
+             - Requests examples or use cases
+
+          5. Apply label "high-priority" if the issue:
+             - Contains words like "urgent", "critical", "important", "severe", "security", "vulnerability"
+             - Describes security vulnerabilities
+             - Reports data loss or system downtime
+             - Mentions production impact or blocking issues
+
+          6. Apply label "good first issue" if the issue:
+             - Is relatively simple or straightforward
+             - Contains words like "beginner", "starter", "easy", "simple", "quick fix"
+             - Would be suitable for new contributors
+             - Has clear acceptance criteria
+
+          7. Apply label "dependencies" if the issue:
+             - Relates to package updates or dependencies
+             - Contains words like "dependency", "package", "update", "version", "upgrade", "outdated"
+             - Mentions specific package names or versions
+             - Discusses compatibility issues
+
+          8. Apply label "testing" if the issue:
+             - Contains words like "test", "testing", "QA", "verification", "validate", "coverage"
+             - Relates to test cases or test coverage
+             - Discusses testing methodologies
+             - Mentions unit tests, integration tests, or end-to-end tests
+
+          9. Apply label "UI/UX" if the issue:
+             - Contains words like "design", "interface", "UI", "UX", "layout", "style", "visual"
+             - Discusses user interface elements
+             - Mentions styling or design improvements
+             - Relates to user experience enhancements
+
+          10. Apply label "performance" if the issue:
+              - Contains words like "slow", "performance", "optimization", "speed", "latency", "memory"
+              - Discusses system performance
+              - Mentions load times or resource usage
+              - Relates to optimization needs
+
+          Additional Instructions:
+          - Multiple labels can and should be applied if the issue matches multiple criteria
+          - Always analyze the full context of the issue before applying labels
+          - Consider both the title and body of the issue when analyzing
+          - If unsure about a label, err on the side of not applying it
+          - Look for implicit meanings, not just explicit keywords
+          - Consider the overall tone and intent of the issue
+          EOF
+
+      - name: Test
+        run: cat instructions.txt
+
+      - name: Run Goose with github extension
+        run: |
+          . ~/.bashrc
+          goose run --with-extension "GITHUB_PERSONAL_ACCESS_TOKEN=${{ secrets.PAT }} npx -y @modelcontextprotocol/server-github" --instructions instructions.txt
