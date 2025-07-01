@@ -28,6 +28,7 @@ jobs:
             - name: Pull latest instructions file
               run: |
                  echo $ISSUE_NUMBER
+                 echo $PR_NUMBER
                  cd $HOME/devdapp-bot
                  git stash
                  git pull https://sarora180673:${{ secrets.PAT }}@github.com/DevDappcom/devdapp-bot.git
